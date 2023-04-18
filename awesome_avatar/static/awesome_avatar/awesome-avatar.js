@@ -21,7 +21,7 @@ bind_on_change_input_file = function(selector, config) {
         var p = new RegExp(/\.(jpg|jpeg|png|gif)$/);
         var fileanme = $(this).val().toLowerCase().replace(/^\s+|\s+$/g, '');
         if(!p.test(fileanme)){
-            alert('Wrong file format. Try .jpg, .jpeg, .png, or .gif instead.');
+            alert(TRANS_WRONG_FILE_FORMAT);
             return ;
         }
 

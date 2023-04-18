@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <div class="awesome-avatar-widget">
     <link rel="stylesheet" href="{{ STATIC_URL }}imgareaselect/css/imgareaselect-animated.css" type="text/css" />
     <script type="text/javascript" src="{{ STATIC_URL }}imgareaselect/scripts/jquery.imgareaselect.pack.js"></script>
@@ -33,6 +35,7 @@
         </tr>
     </table>
     <script>
+        var TRANS_WRONG_FILE_FORMAT = '{% trans "Wrong file format. Try .jpg, .jpeg, .png, or .gif instead." %}';
         bind_on_change_input_file('#{{ id }}', {
             select_area_width: {{ config.select_area_width }},
             select_area_height: {{ config.select_area_height }},
