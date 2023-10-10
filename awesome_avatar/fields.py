@@ -18,6 +18,15 @@ except ImportError:
     pass
 
 
+# Check Pillow version and use right constant
+try:
+    # Pillow >= 9.1.0
+    Image__Resampling__LANCZOS = Image.Resampling.LANCZOS
+except AttributeError:
+    # Pillow < 9.1.0
+    Image__Resampling__LANCZOS = Image.ANTIALIAS
+
+
 class AvatarField(models.ImageField):
     def __init__(self, *args, **kwargs):
 
@@ -42,7 +51,7 @@ class AvatarField(models.ImageField):
             if file_:
                 image = Image.open(file_)
                 image = image.crop(data['box'])
-                image = image.resize((self.width, self.height), Image.ANTIALIAS)
+                image = image.resize((self.width, self.height), Image__Resampling__LANCZOS)
 
                 content = BytesIO()
                 image.save(content, config.save_format, quality=config.save_quality)

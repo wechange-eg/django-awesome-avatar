@@ -3,7 +3,7 @@ import os
 
 name = 'django-awesome-avatar'
 package = 'awesome_avatar'
-version = '1.1.6'
+version = '1.1.7'
 
 url = 'https://github.com/dimka665/django-awesome-avatar'
 author = 'Dmitry Voronin'
