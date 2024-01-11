@@ -3,7 +3,7 @@ from django.forms import FileInput
 from django.template.loader import render_to_string
 
 from awesome_avatar.settings import config
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 
 class AvatarWidget(FileInput):
