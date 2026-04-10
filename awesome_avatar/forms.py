@@ -65,7 +65,8 @@ class AvatarField(forms.ImageField):
             return initial
 
         # make sure, the image is valid, raises ValidationError on failure
-        data['file'] = self._sanitize_image_format(data['file'])
+        if data and 'file' in data:
+            data['file'] = self._sanitize_image_format(data['file'])
 
         return data
 
