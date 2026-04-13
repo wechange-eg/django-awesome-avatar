@@ -30,10 +30,24 @@ class AvatarField(forms.ImageField):
         - converts to RGB jpeg, if image has an uncommon data format (CMYK, etc.)
         - raises ValidationError on Error
         """
+
+        # Image.open will raise an exception if dimensions exceed this limit
+        Image.MAX_IMAGE_PIXELS = 20_000_000 # abort if more than 20 MegaPixel
+
         try:
+            # abort if file is larger than 20MBytes
+            if image.size > 20_971_520:
+                raise ValidationError('Image too large. Please use a smaller image.')
+
+            # do preliminary checks on image format
+            pil_img = Image.open(image)
+            pil_img.verify()
+
+            # open the image again, since verify does make the object unusable
+            image.seek(0)
             pil_img = Image.open(image)
 
-            # return "common" modes unchanged,
+            # return "common" image modes unchanged,
             # see https://pillow.readthedocs.io/en/stable/handbook/concepts.html#concept-modes
             if pil_img.mode in ['1', 'L', 'P', 'RGB', 'RGBA']:
                 return image
@@ -42,9 +56,10 @@ class AvatarField(forms.ImageField):
             pil_img = pil_img.convert('RGB')
             output_image = BytesIO()
             pil_img.save(output_image, format='JPEG', quality=90, optimize=True)
+
+            # create new image file object
             # seek to start position for django to be able to read the data
             output_image.seek(0)
-
             result_image = InMemoryUploadedFile(file=output_image,
                                                 field_name=image.field_name,
                                                 name=image.name,
@@ -54,7 +69,7 @@ class AvatarField(forms.ImageField):
             return result_image
         except Exception as e:
             logger.error('Error during image processing', extra={'exception': force_str(e)})
-            raise ValidationError('Error during image processing. Please use a common Image format.')
+            raise ValidationError('Error during image processing. Please use a common Image format with less than 20MBytes and 20MPixels.')
 
     def to_python(self, data):
         super(AvatarField, self).to_python(getattr(data, 'file', None))
